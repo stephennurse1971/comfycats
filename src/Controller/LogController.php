@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Log;
 use App\Form\LogType;
 use App\Repository\LogRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,8 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/log")
- * @Security("is_granted('ROLE_STAFF')")
+ * @Route("/admin/log")
+ * @Security("is_granted('ROLE_ADMIN')")
+ *
  */
 class LogController extends AbstractController
 {
@@ -29,29 +29,30 @@ class LogController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="log_new", methods={"GET", "POST"})
+     * @Route("/new", name="log_new", methods={"GET","POST"})
      */
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request): Response
     {
         $log = new Log();
         $form = $this->createForm(LogType::class, $log);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($log);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_log_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('log_index');
         }
 
-        return $this->renderForm('log/new.html.twig', [
+        return $this->render('log/new.html.twig', [
             'log' => $log,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="log_show", methods={"GET"})
+     * @Route("/show/{id}", name="log_show", methods={"GET"})
      */
     public function show(Log $log): Response
     {
@@ -61,35 +62,34 @@ class LogController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="log_edit", methods={"GET", "POST"})
+     * @Route("/edit/{id}", name="log_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Log $log, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Log $log): Response
     {
         $form = $this->createForm(LogType::class, $log);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('log_index', [], Response::HTTP_SEE_OTHER);
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('log_index');
         }
 
-        return $this->renderForm('log/edit.html.twig', [
+        return $this->render('log/edit.html.twig', [
             'log' => $log,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="log_delete", methods={"POST"})
+     * @Route("/delete/{id}", name="log_delete", methods={"POST"})
      */
-    public function delete(Request $request, Log $log, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Log $log): Response
     {
         if ($this->isCsrfTokenValid('delete'.$log->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($log);
             $entityManager->flush();
         }
-
-        return $this->redirectToRoute('app_log_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('log_index');
     }
 }

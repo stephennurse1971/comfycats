@@ -1,0 +1,82 @@
+<style>
+    .user-box {
+        position: relative;
+    }
+
+    .user-box input {
+        width: 100%;
+        /*padding: 10px 0;*/
+        font-size: 16px;
+        color: #fff !important;
+        margin-bottom: 30px;
+        border: none;
+        border-bottom: 1px solid white !important;
+        outline: none;
+        background: transparent;
+    }
+    .user-box .form-control:focus{
+        color: black !important;
+    }
+    .user-box label {
+        /*position: absolute;*/
+        /*top: 0;*/
+        /*left: 0;*/
+        /*padding: 10px 0;*/
+        font-size: 16px;
+        color: white
+    }
+
+    .user-box-radio {
+        color: white
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+</style>
+<div class="container bg-gradient-dark">
+    <div class="row">
+        <div class="col-12 col-md-4 mx-auto">
+            {{ form_start(form, {
+                'attr': {'class': 'py-5'},
+                'action': path('new_website_contact_from_contact_form')
+            }) }}
+
+            {{ form_widget(form._token) }}
+
+            <div class="user-box">
+                {{ form_row(form.firstName) }}
+            </div>
+
+            <div class="user-box">
+                {{ form_row(form.lastName) }}
+            </div>
+
+            <div class="user-box">
+                {{ form_row(form.email) }}
+            </div>
+
+            <div class="user-box">
+                {{ form_label(form.mobile, 'Phone', { 'label_attr': {'class': 'form-label'} }) }}<sup style="padding-left:5px">*</sup>
+                {{ form_widget(form.mobile, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+            </div>
+
+            <div class="user-box-radio">
+                <label class="pr-5">Interested in:</label>
+                {{ form_row(form.productsRequested) }}
+            </div>
+
+            <div class="user-box">
+                {{ form_label(form.notes, 'Message', { 'label_attr': {'class': 'form-label pr-5'} }) }}
+                {{ form_widget(form.notes, { 'attr': {'class': 'form-control', 'style': 'width: 100%', 'rows': '7'} }) }}
+            </div>
+
+            <button class="btn btn-outline-success mt-3" type="submit">Submit</button>
+
+            {{ form_end(form) }}
+
+
+        </div>
+    </div>
+</div>

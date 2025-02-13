@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Weather
+    {% if CompanyDetailsService is not null %}
+        : {{ CompanyDetailsService.getCompanyDetails.weatherLocation }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <h1 style="color: red">
+        Weather{% if CompanyDetailsService is not null %}: {{ CompanyDetailsService.getCompanyDetails.weatherLocation }}
+        {% endif %}
+    </h1>
+
+    {% include 'weather/parts/update_and_delete_buttons.html.twig' %}
+
+    <table class="table table-responsive small">
+        <thead>
+        <tr>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Rain</th>
+            <th></th>
+            <th>Temperature</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for weather in weather %}
+            {% if weather.date|date('Y-m-d') == today|date('Y-m-d') %}
+                <tr style="background-color: whitesmoke">
+            {% else %}
+                <tr>
+            {% endif %}
+
+            <td>{{ weather.location }}</td>
+            <td data-sort="{{ weather.date|date('Y-m-d H') }} . {{ weather.time }}">
+                <a target="_blank"
+                   href="{{ path('weather_edit', {id: weather.id}) }}"> {{ weather.date ? weather.date|date('d-M-Y') : '' }}</a>
+            </td>
+            <td data-sort="{{ weather.time }}" style="text-align: right">{{ weather.time }}:00h</td>
+            <td style="text-align: left">
+                {% if weather.rain is not empty %}
+                    <i class="fas fa-cloud-rain"
+                       style="color: blue"> </i>  {{ weather.rain |number_format(2, '.', ',') }}mm/hr
+                {% else %}
+                    <i class="fa fa-sun-o" style="color: orange"></i>
+                {% endif %}
+            </td>
+            <td></td>
+            <td style="text-align: right">
+                {{ weather.weather|number_format(0, '.', ',') }} °C
+            </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a class="btn btn-success btn-sm" href="{{ path('weather_new') }}">New</a>
+{% endblock %}
+
+{% block datatable %}
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable({
+                'pageLength': 100,
+                "order": [[1, 'asc']],
+                "paging": false,
+                "searching": false,
+                "bInfo": false
+            });
+        });
+    </script>
+{% endblock datatable %}

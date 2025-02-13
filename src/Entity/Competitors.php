@@ -5,77 +5,58 @@ namespace App\Entity;
 use App\Repository\CompetitorsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=CompetitorsRepository::class)
- */
+#[ORM\Entity(repositoryClass: CompetitorsRepository::class)]
+#[ORM\Table(name: "competitors")]
+
+
 class Competitors
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $webSite;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $telephone;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $facebook;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $linkedIn;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $instagram;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $twitter;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $type;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $companyAddressStreet;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $competitorAddressCity;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $companyAddressCity;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $competitorAddressPostalCode;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $companyAddressPostalCode;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $competitorAddressCountry;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $companyAddressCountry;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $competitorAddressLongitude;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $competitorAddressLatitude;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $competitorAddressStreet;
 
     public function getId(): ?int
     {
@@ -178,50 +159,74 @@ class Competitors
         return $this;
     }
 
-    public function getCompanyAddressStreet(): ?string
+    public function getCompetitorAddressCity(): ?string
     {
-        return $this->companyAddressStreet;
+        return $this->competitorAddressCity;
     }
 
-    public function setCompanyAddressStreet(?string $companyAddressStreet): self
+    public function setCompetitorAddressCity(?string $competitorAddressCity): self
     {
-        $this->companyAddressStreet = $companyAddressStreet;
+        $this->competitorAddressCity = $competitorAddressCity;
 
         return $this;
     }
 
-    public function getCompanyAddressCity(): ?string
+    public function getCompetitorAddressPostalCode(): ?string
     {
-        return $this->companyAddressCity;
+        return $this->competitorAddressPostalCode;
     }
 
-    public function setCompanyAddressCity(?string $companyAddressCity): self
+    public function setCompetitorAddressPostalCode(string $competitorAddressPostalCode): self
     {
-        $this->companyAddressCity = $companyAddressCity;
+        $this->competitorAddressPostalCode = $competitorAddressPostalCode;
 
         return $this;
     }
 
-    public function getCompanyAddressPostalCode(): ?string
+    public function getCompetitorAddressCountry(): ?string
     {
-        return $this->companyAddressPostalCode;
+        return $this->competitorAddressCountry;
     }
 
-    public function setCompanyAddressPostalCode(string $companyAddressPostalCode): self
+    public function setCompetitorAddressCountry(?string $competitorAddressCountry): self
     {
-        $this->companyAddressPostalCode = $companyAddressPostalCode;
+        $this->competitorAddressCountry = $competitorAddressCountry;
 
         return $this;
     }
 
-    public function getCompanyAddressCountry(): ?string
+    public function getCompetitorAddressLongitude(): ?string
     {
-        return $this->companyAddressCountry;
+        return $this->competitorAddressLongitude;
     }
 
-    public function setCompanyAddressCountry(?string $companyAddressCountry): self
+    public function setCompetitorAddressLongitude(?string $competitorAddressLongitude): self
     {
-        $this->companyAddressCountry = $companyAddressCountry;
+        $this->competitorAddressLongitude = $competitorAddressLongitude;
+
+        return $this;
+    }
+
+    public function getCompetitorAddressLatitude(): ?string
+    {
+        return $this->competitorAddressLatitude;
+    }
+
+    public function setCompetitorAddressLatitude(?string $competitorAddressLatitude): self
+    {
+        $this->competitorAddressLatitude = $competitorAddressLatitude;
+
+        return $this;
+    }
+
+    public function getCompetitorAddressStreet(): ?string
+    {
+        return $this->competitorAddressStreet;
+    }
+
+    public function setCompetitorAddressStreet(?string $competitorAddressStreet): self
+    {
+        $this->competitorAddressStreet = $competitorAddressStreet;
 
         return $this;
     }

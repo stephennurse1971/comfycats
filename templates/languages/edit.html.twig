@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Languages{% endblock %}
+{% block title %}Edit: Language: {{ language.language }}{% endblock %}
 
 {% block body %}
-    <h1 style="color: red">Edit Languages</h1>
+    <h1 style="color: red">Edit: {{ language.language }}</h1>
 
     {{ include('languages/_form.html.twig', {'button_label': 'Update'}) }}
 

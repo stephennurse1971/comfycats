@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Competitors;
+use App\Services\TranslationsWorkerService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,21 +17,17 @@ class CompetitorsType extends AbstractType
             ->add('name')
             ->add('webSite')
             ->add('telephone')
-            ->add('companyAddressStreet')
-            ->add('companyAddressCity')
-            ->add('companyAddressPostalCode')
-            ->add('companyAddressCountry')
+            ->add('competitorAddressStreet')
+            ->add('competitorAddressCity')
+            ->add('competitorAddressPostalCode')
+            ->add('competitorAddressCountry')
+            ->add('competitorAddressLongitude')
+            ->add('competitorAddressLatitude')
             ->add('facebook')
             ->add('linkedIn')
             ->add('instagram')
             ->add('twitter')
-            ->add('type', ChoiceType::class, [
-                'multiple' => false,
-                'expanded' => false,
-                'choices' => [
-                    'Law firm' => 'Law firm',
-                    'Immigration specialist' => 'Immigration specialist'
-                ],])
+            ->add('type')
         ;
     }
 
@@ -39,5 +36,9 @@ class CompetitorsType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Competitors::class,
         ]);
+    }
+    public function __construct(TranslationsWorkerService $translationsWorker)
+    {
+        $this->translationsWorker = $translationsWorker;
     }
 }

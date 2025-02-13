@@ -5,36 +5,24 @@ namespace App\Entity;
 use App\Repository\CompetitorServiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=CompetitorServiceRepository::class)
- */
+#[ORM\Entity(repositoryClass: CompetitorServiceRepository::class)]
+#[ORM\Table(name: "competitor_service")]
+
+
 class CompetitorService
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Competitors::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Competitors::class)]
     private $competitor;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ServicesOffered::class)
-     */
-    private $service;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: "text", nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: "float", nullable: true)]
     private $price;
 
     public function getId(): ?int
@@ -50,18 +38,6 @@ class CompetitorService
     public function setCompetitor(?Competitors $competitor): self
     {
         $this->competitor = $competitor;
-
-        return $this;
-    }
-
-    public function getService(): ?ServicesOffered
-    {
-        return $this->service;
-    }
-
-    public function setService(?ServicesOffered $service): self
-    {
-        $this->service = $service;
 
         return $this;
     }

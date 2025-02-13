@@ -1,13 +1,5 @@
-
-<!-- Remove the container if you want to extend the Footer to full width. -->
-<div class=" my-5">
-    <!-- Footer -->
-    <footer
-            class=" text-lg-start text-white"
-            style="background-color: #929fba"
-    >
-
-
+<div class="my-5">
+    <footer class=" text-lg-start text-white" style="background-color: #929fba">
         <!-- Grid container -->
         <div class=" p-2 pb-0">
             <!-- Section: Links -->
@@ -18,149 +10,186 @@
 
                         <!-- Grid column -->
                         <div style="text-align: left" class=" col-md-12 col-lg-4  mx-auto mt-3  ">
-                            <h6 class="text-uppercase mb-4 font-weight-bold">
-{#                                {{ cmsfooter.getFirstCMS.companyName }}#}
-                            </h6>
-                            <p>
-{#                                {{ cmsfooter.getFirstCMS.footerText |raw }}#}
-                            </p>
+{#                            <h6 class="text-uppercase mb-4 font-weight-bold">#}
+{#                                {% if CompanyDetailsService.getCompanyDetails is not null %}#}
+{#                                    <a style="color: white" href="{{ path('app_home') }}">#}
+{#                                        {{ CompanyDetailsService.getCompanyDetails.companyName }}#}
+{#                                    </a>#}
+{#                                {% endif %}#}
+{#                            </h6>#}
                         </div>
                         <!-- Grid column -->
 
                         <hr class="w-100 clearfix d-md-none"/>
 
                         <!-- Grid column -->
-                        <div style="text-align: left" class=" col-md-12 col-lg-4 mx-auto  mt-3 ">
-                            <h6 class="text-uppercase mb-4 font-weight-bold">Services</h6>
-                            <div class="row">
-                                {% set services_offered = servicesOffered.getServicesOfferedFooter %}
-                                {% for i in 1..2 %}
-                                    {% if i == 1 %}
-                                        <div class="col-md-4">
-                                            {% for service in services_offered %}
-                                                {% if loop.index < 6 %}
-                                                    <div>
-                                                        <li>
-                                                            <a target="_blank" class="text-white mb-1"
-                                                               href="{{ path('service_offered', { serviceOffered: service.serviceOffered}) }}">{{ service.serviceOffered }}</a>
-                                                        </li>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        <div class="col-md-6">
-                                            {% for service in services_offered %}
-                                                {% if loop.index > 5 %}
-                                                    <div>
-                                                        <li>
-                                                            <a target="_blank" class="text-white mb-1"
-                                                               href="{{ path('service_offered', { serviceOffered: service.serviceOffered}) }}">{{ service.serviceOffered }}</a>
-                                                        </li>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-
-                                    {% endif %}
-                                {% endfor %}
+                        {% if CompanyDetailsService.companyDetails is not null %}
+                            <div style="text-align: left" class=" col-md-12 col-lg-4 mx-auto  mt-3 ">
+                                {% if CompanyDetailsService.companyDetails.footerDisplayProducts ==1 %}
+                                    <h6 class="text-uppercase mb-4 font-weight-bold">
+                                        {% if CompanyDetailsService.companyDetails is not null and CompanyDetailsService.companyDetails.titleProducts is not null %}
+                                            {{ CompanyDetailsService.companyDetails.titleProducts }}
+                                        {% else %}
+                                            Products
+                                        {% endif %}
+                                    </h6>
+                                    <div class="row">
+                                        {% set products = ProductService.getProductFooter %}
+                                        {% for i in 1..2 %}
+                                            {% if i == 1 %}
+                                                <div class="col-md-4">
+                                                    {% for product in products %}
+                                                        {% if loop.index < 6 %}
+                                                            <div>
+                                                                <li>
+                                                                    <a target="_blank" class="mb-1" title="{{ product.notes|striptags }}"
+                                                                       href="{{ path('product_display', { product: product.product}) }}">{{ product.product }}</a>
+                                                                </li>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <div class="col-md-6">
+                                                    {% for product in products %}
+                                                        {% if loop.index > 5 %}
+                                                            <div>
+                                                                <li>
+                                                                    <a target="_blank" class="mb-1" title="{{ product.notes|striptags }}"
+                                                                       href="{{ path('product_display', { product: product.product}) }}">{{ product.product }}</a>
+                                                                </li>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
-                        </div>
-                        <!-- Grid column -->
 
-                        <hr class="w-100 clearfix d-md-none"/>
+                            <!-- Grid column -->
 
-                        <!-- Grid column -->
-                        <hr class="w-100 clearfix d-md-none"/>
+                            <hr class="w-100 clearfix d-md-none"/>
 
-                        <!-- Grid column -->
-                        <div class="col-md-6 mt-3 col-lg-2 mx-auto   ">
-                            <h6 class="text-uppercase mb-4 font-weight-bold">Contact
-                                <a class="btn btn-outline-info btn-sm" href="{{ path('create_vcard_company' ) }}">
-                                    <i style="color: yellow" class="fas fa-address-card mr-0"></i>
-                                </a>
-                            </h6>
-                            <p>
-                                <a target="_blank" href="{{ path('/officeaddress') }}">
-                                    <i style="color: red" class="fa fa-map-marker mr-3"></i></a>
-{#                                {{ cmsfooter.getFirstCMS.companyAddress }},#}
-{#                                {{ cmsfooter.getFirstCMS.companyAddressCity }}#}
-{#                                {{ cmsfooter.getFirstCMS.companyAddressPostalCode }}#}
-                            </p>
-                            <p>
-                            <td>
-{#                                <a href="mailto:{{ cmsfooter.getFirstCMS.companyEmail }}">#}
-{#                                    <i class="fas fa-envelope mr-3"> </i></a>#}
-{#                                {{ cmsfooter.getFirstCMS.companyEmail }}#}
-                            </p>
+                            <!-- Grid column -->
+{#                            <hr class="w-100 clearfix d-md-none"/>#}
 
-                            <p>
-{#                                <a href="tel:{{ cmsfooter.getFirstCMS.companyTel|replace({' ': ''}) }}"><i#}
-{#                                            class="fas fa-phone mr-3"></i></a>#}
-{#                                {{ cmsfooter.getFirstCMS.companyTel }}#}
-                            </p>
-                            <p>
-                                <a target="_blank"
-{#                                   href="https://wa.me/{{ cmsfooter.getFirstCMS.companyMobile|replace({' ': ''}) }}">#}
-{#                                    <i class="fab fa-whatsapp mr-3" style="color:green; text-align: center"></i></a>#}
-{#                                {{ cmsfooter.getFirstCMS.companyMobile }}#}
-                            </p>
+                            <!-- Grid column -->
 
-                        </div>
-                        <!-- Grid column -->
+                            <div class="col-md-6 mt-3 col-lg-2 mx-auto">
+                                {% if CompanyDetailsService.companyDetails.footerDisplayContactDetails ==1 %}
+                                    <h6 class="text-uppercase mb-4 font-weight-bold">Contact
+                                        <a class="btn btn-outline-info btn-sm"
+                                           href="{{ path('create_vcard_company') }}">
+                                            <i style="color: yellow" class="fas fa-address-card mr-0"></i>
+                                        </a>
+                                    </h6>
+                                    <p>
+                                        {% if CompanyDetailsService.getCompanyDetails is not null %}
+                                            {% if CompanyDetailsService.companyDetails.footerDisplayAddress ==1 %}
+                                                <a target="_blank" href="{{ path('office_address') }}">
+                                                    <i style="color: red" class="fa fa-map-marker mr-3"></i></a>
+                                                {{ CompanyDetailsService.getCompanyDetails.companyAddressStreet }},
+                                                {{ CompanyDetailsService.getCompanyDetails.companyAddressTown }}
+                                                {{ CompanyDetailsService.getCompanyDetails.companyAddressCity }}
+                                                {{ CompanyDetailsService.getCompanyDetails.companyAddressPostalCode }}
+                                            {% endif %}
+                                        {% endif %}
+                                    </p>
+                                    <p>
+                                        {% if CompanyDetailsService.getCompanyDetails.companyEmail is not null %}
+                                            <a href="mailto:{{ CompanyDetailsService.getCompanyDetails.companyEmail }}">
+                                                <i class="fas fa-envelope mr-3"> </i></a>
+                                            {{ CompanyDetailsService.getCompanyDetails.companyEmail }}
+                                        {% endif %}
+                                    </p>
 
-                        <!-- Grid column -->
-                        {% if cmsfooter.getFirstCMS is not null %}
+                                    {% if CompanyDetailsService.companyDetails.footerDisplayTelNumbers ==1 %}
+                                        <p>
+                                            {% if CompanyDetailsService.getCompanyDetails.companyTel is not null %}
+                                                <a href="tel:{{ CompanyDetailsService.getCompanyDetails.companyTel|replace({' ': ''}) }}">
+                                                    <i class="fas fa-phone mr-3"></i></a>
+                                                {{ CompanyDetailsService.getCompanyDetails.companyTel }}
+                                            {% endif %}
+                                        </p>
+                                        <p>
+                                            {% if CompanyDetailsService.getCompanyDetails.companyMobile is not null %}
+                                                <a target="_blank"
+                                                   href="https://wa.me/{{ CompanyDetailsService.getCompanyDetails.companyMobile|replace({' ': ''}) }}">
+                                                    <i class="fab fa-whatsapp mr-3" style="color:green; text-align: center"></i></a>
+                                                {{ CompanyDetailsService.getCompanyDetails.companyMobile }}
+                                            {% endif %}
+                                        </p>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
 
-                            <div style="text-align: left" class="col-md-6 mt-3 col-lg-2 mx-auto  ">
-                                <h6 class="text-uppercase mb-4 font-weight-bold">Follow us</h6>
-                                <!-- Facebook -->
-{#                                <a target="_blank"#}
-{#                                   class="btn btn-primary btn-floating m-1 footer-social-icon-fb"#}
-{#                                   data-hover-rule="color" data-hover-color="#dd3333"#}
-{#                                   style="color : #1877F2; font-size: 16px; padding:6px;background-color: #3b5998"#}
-{#                                   href="{{ cmsfooter.getFirstCMS.facebook }}"#}
-{#                                   role="button"#}
-{#                                ><i class="fab fa-facebook-f text-light"></i></a>#}
 
-                                <!-- Twitter -->
-{#                                <a target="_blank"#}
-{#                                   class="btn btn-primary btn-floating m-1 footer-social-icon-tw"#}
-{#                                   data-hover-rule="color" data-hover-color="#dd3333"#}
-{#                                   style="color : #1da1f2; font-size: 16px; padding:6px;background-color: #55acee"#}
-{#                                   href="{{ cmsfooter.getFirstCMS.twitter }}"#}
-{#                                   role="button"#}
-{#                                ><i class="fab fa-twitter text-light"></i></a>#}
+                            <div style="text-align: left" class="col-md-6 mt-3 col-lg-2 mx-auto">
+                                {% if CompanyDetailsService.companyDetails.footerDisplaySocialMedia ==1 %}
+                                    <h6 class="text-uppercase mb-4 font-weight-bold">
+                                        Follow us
+                                    </h6>
 
-                                <!-- Instagram -->
-{#                                <a target="_blank"#}
-{#                                   class="btn btn-primary btn-floating m-1 footer-social-icon-in"#}
-{#                                   data-hover-rule="color" data-hover-color="red"#}
-{#                                   style="color : #1da1f2; font-size: 16px; padding:6px; background-color: #ac2bac"#}
-{#                                   href="{{ cmsfooter.getFirstCMS.instagram }}"#}
-{#                                   role="button"#}
-{#                                ><i class="fab fa-instagram text-light"></i></a>#}
+                                    <!-- Facebook -->
+                                    {% if  CompanyDetailsService.getCompanyDetails.facebook is not null %}
+                                        <a target="_blank"
+                                           class="btn btn-primary btn-floating m-1 footer-social-icon-fb"
+                                           data-hover-rule="color" data-hover-color="#dd3333"
+                                           style="color : #1877F2; font-size: 16px; padding:6px;background-color: #3b5998"
+                                           href="https://www.facebook.com/{{ CompanyDetailsService.getCompanyDetails.facebook }}"
+                                           role="button">
+                                            <i class="fab fa-facebook-f text-light"></i>
+                                        </a>
+                                    {% endif %}
 
-{#                                <!-- Linkedin -->#}
-{#                                <a target="_blank"#}
-{#                                   class="btn btn-primary btn-floating m-1 footer-social-icon-ln"#}
-{#                                   data-hover-rule="color" data-hover-color="#dd3333"#}
-{#                                   style="color : #1da1f2; font-size: 16px; padding:6px; background-color: #0082ca"#}
-{#                                   href="{{ cmsfooter.getFirstCMS.linkedIn }}"#}
-{#                                   role="button"#}
-{#                                ><i class="fab fa-linkedin-in text-light"></i></a>#}
+                                    <!-- Linkedin -->
+                                    {% if  CompanyDetailsService.getCompanyDetails.linkedIn is not null %}
+                                        <a target="_blank"
+                                           class="btn btn-primary btn-floating m-1 footer-social-icon-ln"
+                                           data-hover-rule="color" data-hover-color="#dd3333"
+                                           style="color : #1da1f2; font-size: 16px; padding:6px; background-color: #0082ca"
+                                           href="https://www.linkedin.com/in/{{ CompanyDetailsService.getCompanyDetails.linkedIn }}"
+                                           role="button">
+                                            <i class="fab fa-linkedin-in text-light"></i>
+                                        </a>
+                                    {% endif %}
+
+                                    <!-- Instagram -->
+                                    {% if  CompanyDetailsService.getCompanyDetails.instagram is not null %}
+                                        <a target="_blank"
+                                           class="btn btn-primary btn-floating m-1 footer-social-icon-in"
+                                           data-hover-rule="color" data-hover-color="red"
+                                           style="color : #1da1f2; font-size: 16px; padding:6px; background-color: #ac2bac"
+                                           href="https://www.instagram.com/{{ CompanyDetailsService.getCompanyDetails.instagram }}"
+                                           role="button">
+                                            <i class="fab fa-instagram text-light"></i>
+                                        </a>
+                                    {% endif %}
+
+                                    <!-- Twitter -->
+                                    {% if  CompanyDetailsService.getCompanyDetails.twitter is not null %}
+                                        <a target="_blank"
+                                           class="btn btn-primary btn-floating m-1 footer-social-icon-tw"
+                                           data-hover-rule="color" data-hover-color="#dd3333"
+                                           style="color : #1da1f2; font-size: 16px; padding:6px;background-color: #55acee"
+                                           href="https://x.com/{{ CompanyDetailsService.getCompanyDetails.twitter }}"
+                                           role="button">
+                                            <i class="fab fa-twitter text-light"></i>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         {% endif %}
+
                     </div>
                 </div>
                 <!--Grid row-->
             </section>
-            <!-- Section: Links -->
+
         </div>
         <!-- Grid container -->
-
-
     </footer>
     <!-- Footer -->
 </div>
-<!-- End of .container -->

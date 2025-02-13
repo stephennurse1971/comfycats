@@ -4,20 +4,22 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, MailerInterface $mailer, \App\Services\CompanyDetailsService $companyDetailsService): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -25,24 +27,48 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
-            $user->setRoles(['ROLE_CLIENT']);
-            $user->setCreatedBy('On-Line');
+            $user->setEmailVerified(false);
             $user->setPassword(
-            $userPasswordHasher->hashPassword(
+                $passwordEncoder->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
-
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
+            $company_email = $companyDetailsService->getCompanyDetails()->getCompanyEmail();
 
-            return $this->redirectToRoute('app_home');
+            $url = "http://" . $_SERVER['HTTP_HOST'] . "/verify/email/" . $user->getId();
+            $html_body = $companyDetailsService->getCompanyDetails()->getRegistrationEmail();
+            $company_name = $companyDetailsService->getCompanyDetails()->getCompanyName();
+            $html_subject = $company_name . '::  Registration confirmation';
+            $html_link = "Please click on the link below to verify your email address.<br> <a class='btn btn-success' href='" . $url . "'>Verify E-mail</a> ";
+            $html_body = $html_body . $html_link;
+            $email = (new Email())
+                ->from($company_email)
+                ->to($user->getEmail())
+//                ->to('sjwn71@gmail.com')
+                ->bcc('nurse_stephen@hotmail.com')
+                ->subject($html_subject)
+                ->html($html_body);
+            $mailer->send($email);
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/verify/email/{id}", name="app_register_verify_email")
+     */
+    public function verifyEmail($id, UserRepository $userRepository, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $user = $userRepository->find($id);
+        $user->setEmailVerified(true);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_login');
     }
 }

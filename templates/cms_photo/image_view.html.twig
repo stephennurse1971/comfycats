@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Photo:   {% endblock %}
+
+{% block body %}
+
+
+    {% set image = asset('administration/Attachments/CMSPhotos/')~imagename.photo %}
+
+    <div class="row ">
+        <div class="col-12 m-auto">
+            <div class="image-container">
+                    <img class="photosOnePage" src="{{ image }}">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

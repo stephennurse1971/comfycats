@@ -2,13 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\Countries;
+use App\Entity\Languages;
 use App\Entity\User;
+use App\Services\TranslationsWorkerService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,99 +19,136 @@ use Symfony\Component\Security\Core\Security;
 
 class UserType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email')
-            ->add('password')
-            ->add('firstName')
-            ->add('lastName')
-            ->add('mobile')
-            ->add('mobile2')
-            ->add('landline')
-            ->add('gender', ChoiceType::class, [
+            ->add('salutation', ChoiceType::class, [
                 'multiple' => false,
-                'placeholder' => false,
-                'expanded' => true,
-                'required' => false,
+                'expanded' => false,
                 'choices' => [
-                    'Male' => 'Male',
-                    'Female' => 'Female',
-                ],
+                    'Mr.' => 'Mr.',
+                    'Ms.' => 'Ms.',
+                    'Mrs.' => 'Mrs.'
+                ],])
+            ->add('firstName', TextType::class, [
+                'required' => false
+            ])
+            ->add('lastName', TextType::class, [
+                'required' => false
+            ])
+            ->add('emailVerified')
+            ->add('jobTitle', TextType::class, [
+                'required' => false
+            ])
+            ->add('defaultLanguage', EntityType::class, [
+                'class' => Languages::class,
+                'required' => false,
+                'choice_label' => 'language'
             ])
             ->add('linkedIn', TextType::class, [
-                'label' => 'LinkedIn',
-                'required'=>false
+                'required' => false
             ])
-            ->add('dateOfBirth', DateType::class, [
+            ->add('businessStreet', TextType::class, [
+                'required' => false
+            ])
+            ->add('businessCity', TextType::class, [
+                'required' => false
+            ])
+            ->add('businessPostalCode', TextType::class, [
+                'required' => false
+            ])
+            ->add('businessCountry', TextType::class, [
+                'required' => false
+            ])
+            ->add('homeStreet', TextType::class, [
+                'required' => false
+            ])
+            ->add('homeCity', TextType::class, [
+                'required' => false
+            ])
+            ->add('homePostalCode', TextType::class, [
+                'required' => false
+            ])
+            ->add('homeCountry', TextType::class, [
+                'required' => false
+            ])
+            ->add('email')
+            ->add('email2', TextType::class, [
+                'required' => false
+            ])
+            ->add('email3', TextType::class, [
+                'required' => false
+            ])
+            ->add('mobile', TextType::class, [
+                'required' => false
+            ])
+            ->add('mobile2', TextType::class, [
+                'required' => false
+            ])
+            ->add('businessPhone', TextType::class, [
+                'required' => false
+            ])
+            ->add('homePhone', TextType::class, [
+                'required' => false
+            ])
+            ->add('homePhone2', TextType::class, [
+                'required' => false
+            ])
+            ->add('birthday', DateType::class, [
                 'widget' => 'single_text',
-                'required'=>false
+                'required' => false
             ])
-            ->add('addressStreet')
-            ->add('addressCity')
-            ->add('addressPostCode')
-            ->add('addressCountry', EntityType::class, [
-                'class' => Countries::class,
-                'choice_label' => 'country',
-                'required' => false,
-                'empty_data' => null,
+            ->add('webPage', TextType::class, [
+                'required' => false
             ])
-            ->add('notes')
-            ->add('officialFormDisplayLanguage', ChoiceType::class, [
-                'multiple' => false,
-                'label' => 'View forms with the following languages',
-                'placeholder' => false,
-                'expanded' => true,
+            ->add('notes', TextType::class, [
+                'required' => false
+            ])
+            ->add('password', PasswordType::class, [
                 'required' => false,
-                'choices' => [
-                    'English' => 'English',
-                    'Greek' => 'Greek',
-                    'Greek & English' => 'Greek & English',
-                ],
+                'empty_data' => ''
+            ])
+
+            ->add('photo', FileType::class, [
+                'label' => 'Photo',
+                'mapped' => false,
+                'required' => false
             ])
         ;
+        $logged_user_roles = $this->security->getUser()->getRoles();
 
-
-        if (in_array('ROLE_ADMIN', $this->security->getUser()->getRoles())  || in_array('ROLE_SUPER_ADMIN', $this->security->getUser()->getRoles()) ) {
-            $builder->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'ROLE_SUPER_ADMIN' => 'ROLE_SUPER_ADMIN',
-                    'ROLE_ADMIN' => 'ROLE_ADMIN',
-                    'ROLE_STAFF' => 'ROLE_STAFF',
-                    'ROLE_CLIENT' => 'ROLE_CLIENT',
-                ],
-               'mapped' => false,
-               // 'data' => ['ROLE_CLIENT'],
-                'multiple' => TRUE
-            ]);
+        $user_roles = $options['user']->getRoles();
+        if (in_array('ROLE_ADMIN', $logged_user_roles) or in_array('ROLE_SUPER_ADMIN', $logged_user_roles)) {
+            $builder
+                ->add('roles', ChoiceType::class, [
+                    'multiple' => true,
+                    'expanded' => true,
+                    'choices' => [
+                        'Super-Admin' => 'ROLE_SUPER_ADMIN',
+                        'Admin' => 'ROLE_ADMIN',
+                        'User' => 'ROLE_USER'
+                    ],
+                    // 'mapped' => false
+                ])
+                ->add('company', TextType::class, [
+                    'required' => false
+                ]);
         }
-        $user = $options['user'];
-        if($user) {
-            if (in_array('ROLE_STAFF', $user->getRoles()) || in_array('ROLE_ADMIN', $user->getRoles()) || in_array('ROLE_SUPER_ADMIN', $user->getRoles())) {
-                $builder->add('employeeRank')
-                    ->add('photo', FileType::class, [
-                        'label' => 'Employee Photo',
-                        'mapped' => false,
-                        'required' => false,
-                        'attr' => [
-                            'class' => 'photo'
-                        ]
-                    ]);
-            }
-        }
-
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => User::class,
-            'user'=>null
-        ]);
     }
 
     public function __construct(Security $security)
     {
         $this->security = $security;
     }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+            'email1' => null,
+            'email2' => null,
+            'user' => null
+        ]);
+    }
+    
 }

@@ -5,14 +5,20 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Gwenny's Red Tape Services">
-    <meta name="author" content="Gwenny's Red Tape Services">
-    {% if app.environment=='dev' %}
-        <link rel="icon" href="{{ asset('administration/img/immigrationservices_dev.png') }}">
-    {% else %}
-        <link rel="icon" href="{{ asset('administration/img/immigrationservices.png') }}">
+    <meta name="description" content="ATS Template 2">
+    <meta name="author" content="ATS Template 2">
+
+
+    {% if CompanyDetailsService.getCompanyDetails is not null %}
+        {% if app.environment=='dev' %}
+            <link rel="icon"
+                  href="{{ asset('administration/Attachments/Favicons/'~CompanyDetailsService.getCompanyDetails.faviconDev) }}">
+        {% else %}
+            <link rel="icon"
+                  href="{{ asset('administration/Attachments/Favicons/'~CompanyDetailsService.getCompanyDetails.faviconLive) }}">
+        {% endif %}
     {% endif %}
-    <title>{% block title %}Gwenny's Red Tape Services{% endblock %}</title>
+    <title>{% block title %}ATS Template 2{% endblock %}</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -22,18 +28,19 @@
           rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset('admin/css/font.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/small-device.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/medium-device.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/standard/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/standard/small-device.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/standard/medium-device.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/standard/large-device.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/standard/sb-admin-2.css') }}">
     <link rel="stylesheet" href="{{ asset('calendar/calendar-2/dist/zabuto_calendar.min.css') }}"/>
 
     {% block topjs %}
 
     {% endblock topjs %}
     <!-- Custom styles for this template-->
-    <link href="{{ asset('/css/sb-admin-2.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/standard/sb-admin-2.css') }}" rel="stylesheet">
     <style>
-
         thead {
             background-color: #f1efea;
         }
@@ -92,12 +99,12 @@
         }
 
         .nav-item {
-            margin-left: 50px;
+            margin-left: 20px;
 
         }
 
         .nav-link {
-            color: white !important;
+            /*color: white !important;*/
             font-size: 18px
         }
 
@@ -216,11 +223,7 @@
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <!-- Custom scripts for all pages-->
 <script src="{{ asset('admin/js/sb-admin-2.min.js') }}"></script>
-{# {{ include('template_parts/_footer.html.twig') }} #}
 
-{# <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" #}
-{#        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" #}
-{#        crossorigin="anonymous"></script> #}
 
 <script>
     $('.table').addClass('table-responsive');
@@ -273,191 +276,11 @@
 {% endblock additionaljs %}
 
 <script>
-
     ClassicEditor
-        .create(document.querySelector('#user_notes'))
+        .create(document.querySelector('#sub_page_content'))
         .catch(error => {
             console.error(error);
         });
-
-    ClassicEditor
-        .create(document.querySelector('#document_history_notes'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#document_guidelines_guidelines'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#competitor_service_description'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#email_templates_body'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_cms1EN'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_cms2EN'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_cms3EN'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_cms4EN'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_footerText'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para1'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para2'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para3'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para4'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para5'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para6'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para1FR'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para2FR'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para3FR'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para4FR'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para5FR'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para6FR'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para1DE'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para2DE'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para3DE'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para4DE'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para5DE'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para6DE'))
-        .catch(error => {
-            console.error(error);
-        });
-
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para1ES'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para2ES'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para3ES'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para4ES'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para5ES'))
-        .catch(error => {
-            console.error(error);
-        });
-    ClassicEditor
-        .create(document.querySelector('#cms_dynamic_para6ES'))
-        .catch(error => {
-            console.error(error);
-        });
-
 
     // $('table').addClass('table-striped');
     $('.table').addClass('.table-borderless');

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} CMS Photo
+    {% if cms_photo.product is not null %}
+        : {{ cms_photo.product.product }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <h1 style="color: red">Edit:
+        CMS Photo
+        {% if cms_photo.product is not null %}
+            : {{ cms_photo.product.product }}
+        {% endif %}
+    </h1>
+
+    {{ include('cms_photo/_form.html.twig', {'button_label': 'Save'}) }}
+
+    <a class="btn btn-outline-info btn-sm mt-2 mb-2" href="{{ path('cms_photo_index') }}">Return to list</a>
+
+    {{ include('cms_photo/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block additionaljs %}
+    <script>
+        var category = $("#cms_photo_category").val();
+        if (category === 'Static') {
+            $(".static-container").show();
+            $(".product-container").hide();
+        } else {
+            $(".static-container").hide();
+            $(".product-container").show();
+        }
+        $("#cms_photo_category").change(function () {
+            var category = $(this).val();
+            if (category === 'Static') {
+                $(".static-container").show();
+                $(".product-container").hide();
+            } else {
+                $(".static-container").hide();
+                $(".product-container").show();
+            }
+        })
+
+        var photo_present = $("#cms_photo_photo").val();
+            if ($('#cms_photo_id').attr('src') && $('#cms_photo_id').attr('src') !== '') {
+                $('#cms_photo_id').show();
+                $('.photo_input_field').hide(); // Hide input field if image exists
+            }
+    </script>
+{% endblock %}

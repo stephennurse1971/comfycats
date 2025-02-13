@@ -1,154 +1,336 @@
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top " style="background: #eb7f55;">
+<!--Start Header Section -->
+<header id="top-header" class="clearfix">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-gray-100 fixed-top shadow">
+        <div class="container-fluid">
+            <div class="logo">
+                {% if is_granted('ROLE_ADMIN') %}
+                    {% if CompanyDetailsService.getCompanyDetails is not null %}
+                        <a target="_blank" href="{{ path('company_details_edit', {'id': '1'}) }}">
+                            <i style="color: red" class="fa fa-pen"></i>
+                        </a>
+                        <a target="_blank" href="{{ path('company_details_show', {'id': '1'}) }}">
+                            <i style="color: red" class="fa fa-eye"></i>
+                        </a>
 
-        <a class="navbar-brand" href="/">
-            <img alt="Gwenny's Red Tape Services" src="{{ asset('administration/img/immigrationservices.png') }}"
-                 height="50px" width="50px">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+                    {% else %}
+                        <a target="_blank" href="{{ path('company_details_new') }}">
+                            <i style="color: blue" class="fa fa-pen"></i>
+                        </a>
+                    {% endif %}
+                {% endif %}
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    {% if CompanyDetailsService.getCompanyDetails is not null %}
+                        <a style="color: black" href="{{ path('app_home') }}">
+                            {{ CompanyDetailsService.getCompanyDetails.companyName }}
+                        </a>
+                    {% endif %}
+                </a>
+            </div>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto" style="margin-right: 50px;">
+            <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                {% if is_granted('ROLE_STAFF') %}
-                    {% if CountPendingWebsiteInquiries.countContacts >0 %}
-                        <li class="nav-item active">
-                            <a style="color: red" class="nav-link" target="_blank"
-                               href="{{ path('website_contacts_index') }}">
-                                <i title="Website inquiries awaiting a response" style="color: yellow"
-                                   class="fa fa-user-secret"></i>
-                                ({{ CountPendingWebsiteInquiries.countContacts }})
-                            </a>
+            <div class="collapse  main-menu navbar-collapse pr-5 mr-5 " id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto ">
+
+                    <!-- Nav Item #1 - Home -->
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path('app_home') }}">
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </li>
+
+                    <!-- Nav Item #2 - Dashboard -->
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link" target="_blank" href="{{ path('dashboard') }}"><i
+                                        class="fa fa-tachometer-alt"></i></a>
                         </li>
+
+                        {% if CountPendingWebsiteInquiriesService.countContacts >0 %}
+                            <li class="nav-item active">
+                                <a style="color: red" class="nav-link" target="_blank"
+                                   href="{{ path('website_contacts_index') }}">
+                                    <i title="Website inquiries awaiting a response" style="color: purple"
+                                       class="fa fa-user-secret"></i>
+                                    ({{ CountPendingWebsiteInquiriesService.countContacts }})
+                                </a>
+                            </li>
+                        {% endif %}
                     {% endif %}
 
-                    <li class="nav-item active">
-                        <a style="color: red" class="nav-link" target="_blank"
-                           href="{{ path('transaction_index', {subset: 'Pending', clientName: 'All'}) }}">
-                            <i title="Number of pending transactions" class="fa fa-line-chart"></i>
-                            {% if is_granted('ROLE_STAFF') %}
-                                ({{ CountTransactions.countTransactions(NULL, "Pending") }})
-                            {% else %}
-                                ({{ CountTransactions.countTransactions(app.user, "Pending") }})
-                            {% endif %}
-                        </a>
-                    </li>
+                    <!-- Nav Item #3 - Products -->
+                    {% if CompanyDetailsService.companyDetails is not null %}
+                        {% if CompanyDetailsService.companyDetails.headerDisplayProducts ==1 %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if CompanyDetailsService.companyDetails.titleProducts is not null %}
+                                        {{ CompanyDetailsService.companyDetails.titleProducts }}
+                                    {% else %}
+                                        Products
+                                    {% endif %}
+                                </a>
 
-                    <li class="nav-item active">
-                        <a class="nav-link" target="_blank" href="{{ path('advanced_dashboard') }}"><i
-                                    class="fa fa-chalkboard-teacher"></i> Adv Dashboard
-                            <span style="color: red">*</span>
-                        </a>
-                    </li>
-                {% endif %}
-
-                {% if app.user %}
-                    <li class="nav-item active">
-                        <a class="nav-link" target="_blank" href="{{ path('dashboard') }}"><i
-                                    class="fa fa-chalkboard"></i>Dashboard</a>
-                    </li>
-                {% endif %}
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ path('app_home') }}">Home</a>
-                </li>
-
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Services
-                    </a>
-
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {% set services_offered = servicesOffered.getServicesOfferedFooter %}
-                        {% for service in services_offered %}
-                            <a class="dropdown-item"
-                               href="{{ path('service_offered', { serviceOffered: service.serviceOffered}) }}">{{ service.serviceOffered }}</a>
-                        {% endfor %}
-                    </div>
-
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        The Firm
-                    </a>
-
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ path('/aboutUs') }}">About Us</a>
-                        <a class="dropdown-item" href="{{ path('staff') }}">The Team</a>
-                    </div>
-
-                </li>
-                <li class="dropdown nav-item">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Resources</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ path('articles_index') }}">Articles/Guides</a>
-                        <a class="dropdown-item" href="{{ path('business_contacts_index') }}">Useful contacts</a>
-                        <a class="dropdown-item" href="{{ path('/faqs') }}">FAQs</a>
-                    </div>
-                </li>
-
-
-                <li class="dropdown nav-item">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Book An Appointment</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ path('price_list') }}">Price List</a>
-                        {% if is_granted('ROLE_STAFF') %}
-                            <a class="dropdown-item" href="{{ path('office_appointments_index') }}">Book An
-                                Appointment</a>
-                        {% else %}
-                            <a class="dropdown-item" href="{{ path('office_appointments_index_client') }}">Book An
-                                Appointment</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    {% set products = ProductService.getProductMainAll %}
+                                    {% for product in products %}
+                                        {% if product.isActive==1 %}
+                                            <a class="dropdown-item" title="{{ product.notes|striptags }}"
+                                               href="{{ path('product_display', { product: product.product}) }}">{{ product.product }}
+                                            </a>
+                                        {% else %}
+                                            {% if is_granted('ROLE_ADMIN') and product.isActive ==0 %}
+                                                <a class="dropdown-item" title="{{ product.notes|striptags }}"
+                                                   href="{{ path('product_display', { product: product.product}) }}">
+                                                    <span style="color: red">{{ product.product }}*</span>
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </li>
                         {% endif %}
-                    </div>
-                </li>
+                    {% endif %}
 
 
-                {% if app.user %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-user"></i> {{ app.user.fullName }}
+                    <!-- Nav Item #4 - SubProducts -->
+                    {% if CompanyDetailsService.companyDetails is not null %}
+                        {% if CompanyDetailsService.companyDetails.headerDisplaySubProducts ==1 %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if CompanyDetailsService.companyDetails is not null %}
+                                        {{ CompanyDetailsService.companyDetails.titleSubProducts }}
+                                    {% else %}
+                                        Sub-Products
+                                    {% endif %}
+                                </a>
+                                {% if app.user %}
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        {% set products = ProductService.getProductSubAll %}
+                                        {% for product in products %}
+                                            {% if product.isActive==1 %}
+                                                <a class="dropdown-item" title="{{ product.notes|striptags }}"
+                                                   href="{{ path('product_display', { product: product.product}) }}">{{ product.product }}
+                                                </a>
+                                            {% else %}
+                                                {% if is_granted('ROLE_ADMIN') and product.isActive ==0 %}
+                                                    <a class="dropdown-item" title="{{ product.notes|striptags }}"
+                                                       href="{{ path('product_display', { product: product.product}) }}">
+                                                        <span style="color: red">{{ product.product }}*</span>
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        {% set products = ProductService.getProductSubAll %}
+                                        {% for product in products %}
+                                            {% if product.isActive==1 %}
+                                                <a target="_blank" class="dropdown-item text-gray-600 ml-3"
+                                                   href="{{ path('product_display', { product: product.product}) }}">{{ product.product }}
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endif %}
 
-                            {% if is_granted('ROLE_STAFF') %}<span title="Staff" style="color: green">
-                                <i class="fa fa-star"></i></span>
-                            {% endif %}
-                            {% if is_granted('ROLE_ADMIN') %}<span title="Admin" style="color: blue">
-                                <i class="fa fa-chess-knight"></i> </span>
-                            {% endif %}
-                            {% if is_granted('ROLE_SUPER_ADMIN') %}<span title="Super-Admin" style="color: red">
-                                <i class="fa fa-chess-king"></i></span>
-                            {% endif %}
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a target="_blank" class="dropdown-item"
-                               href="{{ path('user_edit', {'fullName': app.user.fullName}) }}">
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                My profile
+                    <!-- Nav Item #5 - Photos -->
+                    {% if CompanyDetailsService.companyDetails is not null %}
+                        {% if CompanyDetailsService.companyDetails.headerDisplayPhotos ==1 and CountPhotoLocationsService.count() >0 %}
+                            <li class="nav-item">
+                                {% if CountPhotoLocationsService.count() >1 %}
+                                    <a class="nav-link" href="{{ path('photos_index' ) }}">Photos</a>
+                                {% endif %}
+                                {% if CountPhotoLocationsService.count() ==1 %}
+                                    <a class="nav-link"
+                                       href="{{ path('show_photos_by_location', { id: CountPhotoLocationsService.maxId(), author: 'All', format: 'Full' }) }}">Gallery</a>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endif %}
+
+
+                    <!-- Nav Item #6 - Useful Contacts/ Weather -->
+                    {% if CompanyDetailsService.companyDetails is not null %}
+                        {% if CompanyDetailsService.companyDetails.headerDisplayBusinessContacts ==1
+                            or CompanyDetailsService.companyDetails.headerDisplayWeather ==1 %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if CompanyDetailsService.companyDetails.titleUsefulLinks is not null %}
+                                        {{ CompanyDetailsService.companyDetails.titleUsefulLinks }}
+                                    {% else %}
+                                        Useful Links
+                                    {% endif %}
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <a style="color: red" class="dropdown-item"
+                                           href="{{ path('useful_links_index', {'category':'All'}) }}">Links
+                                        </a>
+
+                                        <a style="color: red" class="dropdown-item" href="{{ path('file_attachments_index') }}">Files
+                                        </a>
+                                        <hr>
+                                    {% endif %}
+
+
+                                    {% include 'template_parts_project_specific/header_project_specific1.html.twig' %}
+
+                                    {% if CompanyDetailsService.companyDetails.headerDisplayBusinessContacts ==1 %}
+                                        <a style="color: black" class="dropdown-item"
+                                           href="{{ path('business_contacts_index') }}">Useful
+                                            contacts
+                                        </a>
+                                    {% endif %}
+
+                                    {% if  CompanyDetailsService.companyDetails.headerDisplayWeather ==1 %}
+                                        <a style="color: black" class="dropdown-item"
+                                           href="{{ path('weather_index') }}">Weather
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+
+
+                    <!-- Nav Item #6 - Contact -->
+                    {% if CompanyDetailsService.getCompanyDetails is not null %}
+                        {% if CompanyDetailsService.companyDetails.headerDisplayContactDetails ==1 %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Contact
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                                    {% if CompanyDetailsService.companyDetails.companyQrCode is not null %}
+                                        <a class="dropdown-item" target="_blank" href="{{ path('company_qr_code') }}"><i
+                                                    class="fa fa-qrcode"></i> QR code</a>
+                                    {% endif %}
+
+                                    {% if CompanyDetailsService.companyDetails.companyEmail is not null %}
+                                        <a title={{ CompanyDetailsService.companyDetails.companyEmail }} class="dropdown-item"
+                                           href="mailto:{{ CompanyDetailsService.companyDetails.companyEmail }}">
+                                            <span style="color: blue">@</span> {{ CompanyDetailsService.companyDetails.companyEmail }}
+                                        </a>
+                                    {% endif %}
+
+                                    {% if CompanyDetailsService.companyDetails.companyTel is not null %}
+                                        <a class="dropdown-item"
+                                           title="{{ CompanyDetailsService.companyDetails.companyTel }}"
+                                           href="https://wa.me/{{ CompanyDetailsService.companyDetails.companyTel | replace({' ': ''}) }}">
+                                            <i style="color: #0f6848"
+                                               class="fa fa-phone"></i> {{ CompanyDetailsService.companyDetails.companyTel }}
+                                        </a>
+                                    {% endif %}
+
+                                    {% if CompanyDetailsService.companyDetails.companyMobile is not null %}
+                                        <a class="dropdown-item"
+                                           title="{{ CompanyDetailsService.companyDetails.companyMobile }}"
+                                           href="https://wa.me/{{ CompanyDetailsService.companyDetails.companyMobile | replace({' ': ''}) }}">
+                                            <i style="color: #0f6848"
+                                               class="fab fa-whatsapp"></i> {{ CompanyDetailsService.companyDetails.companyMobile }}
+                                        </a>
+                                    {% endif %}
+
+                                    {% if CompanyDetailsService.companyDetails.companySkype is not null %}
+                                        <a class="dropdown-item"
+                                           title="{{ CompanyDetailsService.companyDetails.companySkype }}"
+                                           href="skype:{{ CompanyDetailsService.companyDetails.companySkype }}?call">
+                                            <i style="color: royalblue"
+                                               class="fab fa-skype"></i> {{ CompanyDetailsService.companyDetails.companySkype }}
+                                        </a>
+                                    {% endif %}
+
+                                    {% if app.user %}
+                                        {% if CompanyDetailsService.companyDetails.companyAddressStreet is not null %}
+                                            <a class="dropdown-item" target="_blank"
+                                               title="{{ CompanyDetailsService.companyDetails.companyAddressStreet }} "
+                                               href="{{ path('office_address') }}"> <i style="color: royalblue"
+                                                                                       class="fa fa-car"></i> {{ CompanyDetailsService.companyDetails.companyAddressStreet }}
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                    <a class="dropdown-item" title="Contact details"
+                                       href="{{ path('create_vcard_company') }}">
+                                        <i class="fa fa-credit-card"></i> Business Card
+                                    </a>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+
+
+                    {% include 'template_parts_project_specific/header_project_specific2.html.twig' %}
+
+                    <!-- Nav Item #8 - Login -->
+                    {% if CompanyDetailsService.getCompanyDetails is not null and (CompanyDetailsService.companyDetails.headerDisplayLogin ==1 or app.user is not null) %}
+                        {% if app.user %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ app.user.fullName }}
+                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                        <i title="Super-Admin" style="color: green" class="fa fa-hat-wizard"></i>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <i title="Admin" style="color: orange" class="fa fa-user-tie"></i>
+                                    {% endif %}
+                                </a>
+
+                                {% include 'template_parts_project_specific/header_project_specific3.html.twig' %}
+
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item"
+                                       href="{{ path('user_edit',{'id':app.user.id}) }}">Profile</a>
+                                    <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-outline-dark btn-sm" href="{{ path('app_login') }}">Login</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if CompanyDetailsService.getCompanyDetails is not null and
+                        CompanyDetailsService.companyDetails.multiLingual ==1 and
+                        LanguagesService.getLanguages != null and LanguagesService.LanguageSelected != null %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{{ asset('administration/ATSSharedFiles/LanguageIcons/'~LanguagesService.LanguageSelected.icon) }}"
+                                     height="30" width=30">
                             </a>
-                            <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
-                        </div>
-                    </li>
-
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('log_index') }}">Login</a>
-                    </li>
-                {% endif %}
-
-            </ul>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% for language in LanguagesService.getLanguagesByRankingOrder %}
+                                    {% if language.language != LanguagesService.LanguageSelected.language %}
+                                        <a class="dropdown-item"
+                                           href="{{ path('select_default_language',{id:language.id}) }}">
+                                            <img src="{{ asset('administration/ATSSharedFiles/LanguageIcons/'~language.icon) }}"
+                                                 height="30" width=30">
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-
     </nav>
-
+    <!-- Navigation -->
 </header>
+<!--End Header Section -->

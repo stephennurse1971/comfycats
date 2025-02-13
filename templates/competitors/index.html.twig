@@ -4,8 +4,8 @@
 
 {% block body %}
     <h1 style="color: red">Competitors</h1>
-
-    <table class="table">
+    {% include 'competitors/parts/import_and_export.html.twig' %}
+    <table class="table table-responsive small">
         <thead>
         <tr>
             <th>Name</th>
@@ -32,13 +32,13 @@
                     {% if competitor.webSite is not null %}
                         <a title="{{ competitor.webSite }}" target="_blank" href={{ competitor.webSite }}><span
                                     style="color : #1da1f2; font-size: 16px; padding:6px"><i class="fa fa-link"
-                                                                                             style="font-size:24px"></i> </span></a>
+                                                                                             style="font-size:14px"></i> </span></a>
                     {% endif %}
                 </td>
                 <td style="text-align: center">
-                    {% if competitor.companyAddressStreet is not empty %}
+                    {% if competitor.competitorAddressStreet is not empty %}
                         <i class="fa fa-home"
-                           title="{{ competitor.companyAddressStreet }}, {{ competitor.companyAddressCity }} {{ competitor.companyAddressPostalCode }}"></i>
+                           title="{{ competitor.competitorAddressStreet }}, {{ competitor.competitorAddressCity }} {{ competitor.competitorAddressPostalCode }}"></i>
                     {% endif %}
                 </td>
                 <td>
@@ -76,10 +76,12 @@
                     {% for competitor_service in competitor_services %}
                         {% if competitor_service.competitor.name == competitor.name %}
                             <li>
-                               <a>  <i style="color: red" title="{{ competitor_service.description|raw }}" class="fa fa-info-circle"></i>
-                                <a href="{{ path('competitor_service_edit', {id: competitor_service.id}) }}" target="_blank">{{ competitor_service.service.serviceOffered }}</a>
-                                (€ {{ competitor_service.price|number_format() }})
-                                  </li>
+                                <a> <i style="color: red" title="{{ competitor_service.description|raw }}"
+                                       class="fa fa-info-circle"></i>
+                                    <a href="{{ path('competitor_service_edit', {id: competitor_service.id}) }}"
+                                       target="_blank">{{ competitor_service.service.serviceOffered }}</a>
+                                    (€ {{ competitor_service.price|number_format() }})
+                            </li>
                         {% endif %}
                     {% endfor %}
 
@@ -89,7 +91,6 @@
         </tbody>
     </table>
 
-    <a class="btn btn-success btn-sm" href="{{ path('competitors_new') }}">New</a>
 {% endblock %}
 
 {% block datatable %}

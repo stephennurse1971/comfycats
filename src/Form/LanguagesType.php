@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Languages;
+use App\Services\TranslationsWorkerService;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,8 +14,16 @@ class LanguagesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('ranking')
+            ->add('isActive')
             ->add('language')
-            ->add('rank')
+            ->add('abbreviation')
+            ->add('linkedInOther')
+            ->add('icon', FileType::class, [
+                'label' => 'Icon',
+                'mapped' => false,
+                'required' => false
+            ])
         ;
     }
 
@@ -22,5 +32,10 @@ class LanguagesType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Languages::class,
         ]);
+    }
+
+    public function __construct(TranslationsWorkerService $translationsWorker)
+    {
+        $this->translationsWorker = $translationsWorker;
     }
 }

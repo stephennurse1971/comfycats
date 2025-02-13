@@ -1,0 +1,227 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Company Details{% endblock %}
+
+{% block body %}
+    <h1 style="color: red">Company Details</h1>
+
+    <table class="table small">
+        <thead>
+        <tr>
+            <th style="text-align: left">Name</th>
+            <th style="text-align: left">Website</th>
+            <th style="text-align: left">Favicons<br>Live/Dev</th>
+            <th style="text-align: left">Email</th>
+            <th>Tel</th>
+            <th>Mobile</th>
+            <th>Skype</th>
+            <th>Address</th>
+            <th>Time<br>Zone</th>
+            <th>Ccy</th>
+            <th>Multi<br>Language</th>
+            <th>User<br>Registration</th>
+            <th>Weather<br>Location</th>
+            <th>Directions</th>
+            <th>QR</th>
+            <th>Facebook</th>
+            <th>LinkedIn</th>
+            <th>Instagram</th>
+            <th>Twitter</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for company_detail in company_details %}
+            <tr>
+                <td>
+                    {{ company_detail.companyName }}
+                    {% if company_detail.contactFirstName is not null or company_detail.contactLastName is not null %}
+                        <br>
+                        ({{ company_detail.contactFirstName }} {{ company_detail.contactLastName }})
+                    {% endif %}
+                </td>
+                <td>
+                    <a target="_blank" href="{{ company_detail.companyWebsite }}">
+                        <i title="{{ company_detail.companyWebsite }}" class="fa fa-link"></i>
+                    </a>
+                    {{ company_detail.companyWebsite }}
+                </td>
+
+                {% set faviconLive = asset('administration/Attachments/Favicons/'~CompanyDetailsService.getCompanyDetails.faviconLive) %}
+                {% set faviconDev = asset('administration/Attachments/Favicons/'~CompanyDetailsService.getCompanyDetails.faviconDev) %}
+
+                <td style="text-align: center">
+                    {% if company_detail.faviconLive is not null %}
+                        <img height="50" width="50" src="{{ faviconLive }}" class="rounded-circle test">
+                        <br>
+                        <br>
+                    {% endif %}
+                    {% if company_detail.faviconDev is not null %}
+                        <img height="50" width="50" src="{{ faviconDev }}" class="rounded-circle test">
+                    {% endif %}
+                </td>
+
+                <td style="text-align: left">
+                    <a href="mailto:{{ company_detail.companyEmail }}">
+                        <i class="fas fa-envelope mr-1"> </i></a><br>
+                    {{ company_detail.companyEmail }}
+                    <br>
+                    {% if company_detail.companyEmailPassword is not null %}
+                        <br><b>Password:</b> {{ company_detail.companyEmailPassword }}
+                    {% endif %}
+                    <br>
+                    {% if company_detail.companyEmailImportDirectory is not null %}
+                        <br>
+                        <b>Import:</b> {{ company_detail.companyEmailImportDirectory }} /{{ company_detail.companyEmailImportProcessedDirectory }}
+                    {% endif %}
+                </td>
+                <td style="text-align: center">
+                    {% if company_detail.companyTel is not empty %}
+                    <a title="{{ company_detail.companyTel }}"
+                       href="https://wa.me/{{ company_detail.companyTel | replace({' ': ''}) }}">
+                        <i style="color: green" class="fa fa-phone"></i>
+                    </a>
+                    {% endif %}
+                </td>
+                <td style="text-align: center">
+                    {% if company_detail.companyMobile is not empty %}
+                    <a title="{{ company_detail.companyMobile }}"
+                       href="https://wa.me/{{ company_detail.companyMobile | replace({' ': ''}) }}">
+                        <i style="color: green"
+                           class="fab fa-whatsapp"></i>
+                    </a>
+                    {% endif %}
+                    {#                    {{ company_detail.companyMobile }} #}
+                </td>
+                <td style="text-align: center ">
+                    {% if company_detail.companySkype is not null %}
+                        <a title="{{ company_detail.companySkype }}"
+                           href="skype:{{ company_detail.companySkype }}?call">
+                            <i style="color: royalblue" class="fab fa-skype"></i>
+                        </a>
+                    {% endif %}
+                </td>
+                <td>
+                    <a target="_blank" href="{{ path('office_address') }}">
+                        <i style="color: red" class="fa fa-map-marker ml-2"></i></a>
+                    {{ company_detail.companyAddressStreet }}, <br>
+                    {{ company_detail.companyAddressTown }},
+                    {{ company_detail.companyAddressCity }}
+                    {{ company_detail.companyAddressPostalCode }}
+                </td>
+                <td style="text-align: center">
+                    {{ company_detail.companyTimeZone }}
+                </td>
+                <td style="text-align: center">
+                    {{ company_detail.currency }}
+                </td>
+
+                <td style="text-align: center">
+
+                    {% if company_detail.multiLingual == 1 %}
+                        <i class="fa fa-check" style="color: green"></i>
+                    {% endif %}
+                    {% if company_detail.multiLingual == 0 or company_detail.multiLingual is empty %}
+                        <i class="fa fa-remove" style="color: red"></i>
+                    {% endif %}
+                </td>
+
+                <td style="text-align: center">
+                    {% if company_detail.enableUserRegistration ==1 %}
+                        <i class="fa fa-check" style="color: green"></i>
+                    {% else %}
+                        <i style="color: red" class="fa fa-remove"></i>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {{ company_detail.weatherLocation }}
+                </td>
+                <td>
+                    {% set addressInstructionsRaw = company_detail.companyAddressInstructions|striptags %}
+                    {% set addressInstructionsSliced = (addressInstructionsRaw|slice(0,70)) %}
+
+                    <i title="{{ addressInstructionsRaw }}" style="color: blue" class="fa fa-info-circle"></i>
+                    {{ addressInstructionsSliced |raw }}....
+                </td>
+
+                <td style="text-align: center">
+                    {% if company_detail.companyQrCode is not empty %}
+                        <a target="_blank" title="{{ company_detail.companyQrCode }}"
+                           href="{{ path('company_qr_code') }}">
+                            <i class="fa fa-qrcode"></i>
+                        </a>
+                    {% endif %}
+                </td>
+                <td style="text-align: center">
+                    {% if company_detail.facebook is not empty %}
+                        <a target="_blank" title="{{ company_detail.facebook }}"
+                           href="https://www.facebook.com/{{ company_detail.facebook }}">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <br>
+                        {{ company_detail.facebook }}
+                    {% endif %}
+                </td>
+                <td style="text-align: center">
+                    {% if company_detail.linkedIn is not empty %}
+                        <a target="_blank" title="{{ company_detail.linkedIn }}"
+                           href="https://www.linkedin.com/in/{{ company_detail.linkedIn }}">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <br>
+                        {{ company_detail.linkedIn }}
+                    {% endif %}
+                </td>
+                <td style="text-align: center">
+                    {% if company_detail.instagram is not empty %}
+                        <a target="_blank" title="{{ company_detail.instagram }}"
+                           href="https://www.instagram.com/{{ company_detail.instagram }}">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <br>
+                        {{ company_detail.instagram }}
+                    {% endif %}
+                </td>
+                <td style="text-align: center">
+                    {% if company_detail.twitter is not empty %}
+                        <a target="_blank" title="{{ company_detail.twitter }}"
+                           href="https://x.com/{{ company_detail.twitter }}">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <br>
+                        {{ company_detail.twitter }}
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-outline-danger btn-sm"
+                       href="{{ path('company_details_edit', {'id': company_detail.id}) }}">Edit</a>
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <br><br>
+        <a target="_blank" class="btn btn-success btn-sm" href="{{ path('company_details_new') }}">New</a>
+    {% endif %}
+{% endblock %}
+
+
+
+
+{% block datatable %}
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable({
+                'pageLength': 100,
+                "order": [[1, 'asc']],
+                "paging": false,
+                "searching": false,
+                "bInfo": false
+            });
+        });
+    </script>
+{% endblock datatable %}
